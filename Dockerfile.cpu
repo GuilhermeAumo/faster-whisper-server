@@ -5,7 +5,7 @@ USER root
 RUN apt-get update
 RUN apt-get install -y ffmpeg software-properties-common -V
 RUN add-apt-repository ppa:deadsnakes/ppa
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y python3.12 python3-distutils -V
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y python3.12 -V
 RUN apt-get clean    
 RUN rm -rf /var/lib/apt/lists/*
 
