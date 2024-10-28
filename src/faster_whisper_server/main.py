@@ -20,9 +20,15 @@ from faster_whisper_server.routers.misc import (
 from faster_whisper_server.routers.stt import (
     router as stt_router,
 )
+from fastapi import Request
+from fastapi.responses import JSONResponse
 
 if TYPE_CHECKING:
     from collections.abc import AsyncGenerator
+
+logging.basicConfig(level=logging.DEBUG)
+
+
 
 
 def create_app() -> FastAPI:
@@ -54,6 +60,22 @@ def create_app() -> FastAPI:
             allow_credentials=True,
             allow_methods=["*"],
             allow_headers=["*"],
+        )
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],  # Set appropriate origin for production
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+    @app.exception_handler(403)
+    async def forbidden_error_handler(request: Request, exc):
+        print(f">>>>> Error 403 {str(exc)}")
+        return JSONResponse(
+            status_code=403,
+            content={"message": "Forbidden: Check permissions or CORS settings"},
         )
 
     if config.enable_ui:
